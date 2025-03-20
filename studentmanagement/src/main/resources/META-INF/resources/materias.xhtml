@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:f="http://xmlns.jcp.org/jsf/core"
+  xmlns:p="http://primefaces.org/ui"
+>
+  <h:head>
+    <title>Gestión de Materias</title>
+    <!--<h:outputStylesheet library="css" name="bootstrap.min.css" />
+    <h:outputStylesheet library="css" name="layaut.css" />-->
+  </h:head>
+
+  <h:body class="container">
+    <h:form>
+        <p:toolbar>
+          <p:toolbarGroup>
+            <p:commandButton value="Estudiantes" icon="pi pi-users"
+    action="estudiantes?faces-redirect=true"
+    styleClass="btn btn-primary">
+    <p:ajax />
+</p:commandButton>
+
+<p:commandButton value="Matriculas" icon="pi pi-book"
+    action="matriculas?faces-redirect=true"
+    styleClass="btn btn-secondary">
+    <p:ajax />
+</p:commandButton>
+          </p:toolbarGroup>
+        </p:toolbar>
+      </h:form>
+    <h:form id="form">
+      <p:growl id="messages" showDetail="true" />
+
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <h3 class="text-primary">Lista de Materias</h3>
+        <p:commandButton
+          value="Nuevo Materia"
+          icon="pi pi-plus"
+          styleClass="btn btn-primary"
+          oncomplete="PF('dialogoNuevo').show()"
+          process="@this"
+        />
+      </div>
+
+      <p:dataTable
+        id="dt-materia"
+        var="materia"
+        value="#{materiaBean.listaMaterias}"
+        paginator="true"
+        rows="5"
+        rowKey="#{materia.id_materia}"
+      >
+        <!--<p:column headerText="ID">
+          <h:outputText value="#{estudiante.id_estudiante}" />
+        </p:column>-->
+
+        <p:column headerText="Materia">
+          <h:outputText value="#{materia.nombre}" />
+        </p:column>
+
+        <p:column headerText="creditos">
+          <h:outputText value="#{materia.creditos}" />
+        </p:column>
+
+        <p:column headerText="Acciones">
+          <p:commandButton
+            value="Eliminar"
+            action="#{materiaBean.deleteMateria(materia.id_materia)}"
+            process="@this"
+            update="dt-materia"
+            styleClass="btn btn-danger"
+            icon="pi pi-trash"
+          >
+          </p:commandButton>
+          <p:commandButton value="Actualizar" icon="pi pi-pencil" styleClass="btn btn-warning"
+            actionListener="#{materiaBean.cargarMateria(materia)}"
+            update="dialogo"
+            oncomplete="PF('dialogoNuevo').show()"
+            resetValues="true"
+          />
+        </p:column>
+      </p:dataTable>
+    </h:form>
+
+    <!-- Dialogo para Crear/Editar Estudiante -->
+    <p:dialog  id="dialogo" header="Materia" widgetVar="dialogoNuevo">
+      <h:form>
+      <h:panelGrid columns="2">
+        <p:outputLabel for="nombre" value="Materia:" />
+        <p:inputText
+          id="nombre"
+          value="#{materiaBean.materia.nombre}"
+          required="true"
+        />
+        <p:outputLabel for="credito" value="Creditos:" />
+        <p:inputText
+          id="credito"
+          value="#{materiaBean.materia.creditos}"
+          required="true"
+        />
+      </h:panelGrid>
+
+      <p:commandButton
+        value="Guardar"
+        action="#{materiaBean.addMateria()}"
+        update="form"
+        icon="pi pi-save"
+        styleClass="btn btn-success"
+        oncomplete="PF('dialogoNuevo').hide()"
+        resetValues="true"
+        
+      />
+      <p:commandButton
+        value="Cancelar"
+        immediate="true"
+        oncomplete="PF('dialogoNuevo').hide()"
+      />
+    
+    </h:form>
+  </p:dialog>
+
+  </h:body>
+</html>
